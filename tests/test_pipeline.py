@@ -60,19 +60,41 @@ def test_domain_edge_cases_in_orders(project_root):
         assert valid.empty and expected in rejects.iloc[0]["_reject_reason"]
 
 
-def test_rerun_is_idempotent(project_root,tmp_path):
+def test_rerun_is_idempotent(project_root, tmp_path):
     import shutil
-    shutil.copytree(project_root/"config",tmp_path/"config")
-    shutil.copytree(project_root/"data/input",tmp_path/"data/input")
-    (tmp_path/"data/output").mkdir(parents=True)
-    (tmp_path/"data/quarantine").mkdir(parents=True)
-    (tmp_path/"reports").mkdir()
-    run_pipeline("config/customers.yaml","customers-1",tmp_path)
-    run_pipeline("config/customers.yaml","customers-2",tmp_path)
-    with sqlite3.connect(tmp_path/"data/output/warehouse.db") as conn:
-        count=conn.execute("select count(*) from customers").fetchone()[0]
-    assert count==20
 
+    shutil.copytree(project_root / "config", tmp_path / "config")
+
+    input_dir = tmp_path / "data" / "input"
+    output_dir = tmp_path / "data" / "output"
+
+    input_dir.mkdir(parents=True)
+    output_dir.mkdir(parents=True)
+    (tmp_path / "reports").mkdir()
+    (tmp_path / "data" / "quarantine").mkdir(parents=True)
+
+    rows = []
+    for i in range(20):
+        rows.append({
+            "customer_id": f"C{i:03d}",
+            "customer_name": f"Customer {i}",
+            "email": f"customer{i}@example.com",
+            "signup_date": "2024-01-01",
+            "country_code": "IN",
+            "updated_at": "2026-01-01T00:00:00Z",
+        })
+
+    pd.DataFrame(rows).to_csv(input_dir / "customers.csv", index=False)
+
+    run_pipeline("config/customers.yaml", "customers-1", tmp_path)
+    run_pipeline("config/customers.yaml", "customers-2", tmp_path)
+
+    with sqlite3.connect(output_dir / "warehouse.db") as conn:
+        count = conn.execute(
+            "SELECT COUNT(*) FROM customers"
+        ).fetchone()[0]
+
+    assert count == 20
 
 def test_invalid_reference_is_quarantined(project_root):
     cfg=load_config(project_root/"config/orders.yaml")
