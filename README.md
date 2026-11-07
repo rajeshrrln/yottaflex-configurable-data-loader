@@ -19,7 +19,7 @@ Customers are the parent entity (`customer_id`, one row per customer). Orders ar
 Python 3.10+.
 
 ```bash
-git clone https://github.com/<your-username>/yottaflex-configurable-data-loader.git
+git clone git clone https://github.com/rajeshrrln/yottaflex-configurable-data-loader.git
 cd yottaflex-configurable-data-loader
 python -m venv .venv
 # Windows: .venv\\Scripts\\activate
