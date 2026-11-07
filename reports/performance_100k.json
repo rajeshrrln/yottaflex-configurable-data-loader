@@ -1,0 +1,35 @@
+{
+  "customers": {
+    "run_id": "bench-customers",
+    "dataset": "customers",
+    "source_file": "data/input/customers.csv",
+    "started_at": "2026-11-06T15:46:17.315988+00:00",
+    "status": "success",
+    "ended_at": "2026-11-06T15:46:18.415578+00:00",
+    "input_rows": 20000,
+    "valid_rows": 20000,
+    "rejected_rows": 0,
+    "published_rows": 20000,
+    "schema_drift": [],
+    "quarantine_file": null,
+    "duration_seconds": 1.09959
+  },
+  "orders": {
+    "run_id": "bench-orders",
+    "dataset": "orders",
+    "source_file": "data/input/orders.jsonl",
+    "started_at": "2026-11-06T15:46:18.426406+00:00",
+    "status": "success",
+    "ended_at": "2026-11-06T15:46:25.045196+00:00",
+    "input_rows": 100000,
+    "valid_rows": 100000,
+    "rejected_rows": 0,
+    "published_rows": 100000,
+    "schema_drift": [],
+    "quarantine_file": null,
+    "duration_seconds": 6.61879
+  },
+  "combined_elapsed_seconds": 7.763,
+  "records_per_second": 15457.0,
+  "environment": "local Python + pandas + SQLite; 20,000 customers and 100,000 orders; fixed seed 42"
+}

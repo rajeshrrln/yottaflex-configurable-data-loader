@@ -15,3 +15,5 @@ reports/*
 .env
 *.db
 *.egg-info/
+!reports/sample_run_summary.json
+!reports/performance_100k.json

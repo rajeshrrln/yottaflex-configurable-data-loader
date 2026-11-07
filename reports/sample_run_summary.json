@@ -1,0 +1,39 @@
+{
+  "customers_run": {
+    "run_id": "customers-demo",
+    "dataset": "customers",
+    "source_file": "data/input/customers.csv",
+    "started_at": "2026-11-06T15:46:40.435387+00:00",
+    "status": "success",
+    "ended_at": "2026-11-06T15:46:40.493046+00:00",
+    "input_rows": 20,
+    "valid_rows": 20,
+    "rejected_rows": 0,
+    "published_rows": 20,
+    "schema_drift": [],
+    "quarantine_file": null,
+    "duration_seconds": 0.057659
+  },
+  "orders_run": {
+    "run_id": "orders-demo",
+    "dataset": "orders",
+    "source_file": "data/input/orders.jsonl",
+    "started_at": "2026-11-06T15:46:41.653286+00:00",
+    "status": "success",
+    "ended_at": "2026-11-06T15:46:41.724674+00:00",
+    "input_rows": 101,
+    "valid_rows": 95,
+    "rejected_rows": 6,
+    "published_rows": 95,
+    "schema_drift": [],
+    "quarantine_file": "/mnt/data/yottaflex-data-loader/data/quarantine/orders_orders-demo.csv",
+    "duration_seconds": 0.071388
+  },
+  "target_counts": {
+    "customers": 20,
+    "orders": 95
+  },
+  "orphan_orders": 0,
+  "run_ledger_rows": 2,
+  "reconciliation": "PASS"
+}
