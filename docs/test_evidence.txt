@@ -10,3 +10,4 @@ Failed: 0
 Execution time: 0.41 seconds
 
 Final Status: PASS
+Event-time protection regression tests: 15 passed in 2.51s

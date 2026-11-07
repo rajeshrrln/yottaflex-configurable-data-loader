@@ -41,7 +41,14 @@ def run_pipeline(config_path: str, run_id: str | None = None, base_dir: str | Pa
         # Attach operational lineage to accepted rows.
         valid["run_id"] = run_id
         valid["source_file"] = str(cfg["source"]["path"])
-        publish(valid, str(target_path), cfg["target"]["table"], cfg["keys"], cfg["target"]["load_mode"])
+        publish(
+            valid,
+            str(target_path),
+            cfg["target"]["table"],
+            cfg["keys"],
+            cfg["target"]["load_mode"],
+            order_column=cfg["target"].get("order_column"),
+        )
         quarantine_path = base / "data/quarantine" / f"{dataset}_{run_id}.csv"
         if not rejected.empty:
             quarantine_path.parent.mkdir(parents=True, exist_ok=True)

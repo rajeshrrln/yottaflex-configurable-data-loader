@@ -10,6 +10,7 @@ target:
   path: data/output/warehouse.db
   format: sqlite
   load_mode: upsert
+  order_column: updated_at
 keys: [order_id]
 references:
   - { column: customer_id, dataset: customers, target_table: customers, target_column: customer_id }
