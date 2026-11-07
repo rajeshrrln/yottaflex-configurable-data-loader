@@ -104,3 +104,49 @@ def test_failed_run_records_failure_reason(project_root,tmp_path):
     with sqlite3.connect(tmp_path/"data/output/warehouse.db") as conn:
         status=conn.execute("select status from pipeline_runs where run_id='failure-run'").fetchone()[0]
     assert status=="failed"
+
+
+def test_unexpected_columns_are_reported(project_root):
+    cfg = load_config(project_root / "config/customers.yaml")
+
+    row = {
+        "customer_id": "C100",
+        "customer_name": "Test Customer",
+        "email": "test@example.com",
+        "signup_date": "2024-01-01",
+        "country_code": "IN",
+        "updated_at": "2026-01-01T00:00:00Z",
+        "unexpected_field": "extra_value",
+    }
+
+    valid, rejects, schema_info = validate_frame(
+        pd.DataFrame([row]), cfg
+    )
+
+    assert len(valid) == 1
+    assert rejects.empty
+    assert schema_info["unexpected_columns"] == ["unexpected_field"]
+    assert "unexpected_field" not in valid.columns
+
+
+def test_multiple_unexpected_columns_are_reported(project_root):
+    cfg = load_config(project_root / "config/customers.yaml")
+
+    row = {
+        "customer_id": "C101",
+        "customer_name": "Another Customer",
+        "email": "another@example.com",
+        "signup_date": "2024-01-01",
+        "country_code": "IN",
+        "updated_at": "2026-01-01T00:00:00Z",
+        "extra_b": "B",
+        "extra_a": "A",
+    }
+
+    valid, rejects, schema_info = validate_frame(
+        pd.DataFrame([row]), cfg
+    )
+
+    assert len(valid) == 1
+    assert rejects.empty
+    assert schema_info["unexpected_columns"] == ["extra_a", "extra_b"]

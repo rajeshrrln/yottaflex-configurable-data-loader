@@ -11,3 +11,5 @@ Execution time: 0.41 seconds
 
 Final Status: PASS
 Event-time protection regression tests: 15 passed in 2.51s
+
+Schema drift and recovery regression tests: 20 passed in 1.51s
