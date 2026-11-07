@@ -150,3 +150,151 @@ def test_multiple_unexpected_columns_are_reported(project_root):
     assert len(valid) == 1
     assert rejects.empty
     assert schema_info["unexpected_columns"] == ["extra_a", "extra_b"]
+
+
+def test_pipeline_recovers_after_correcting_source(project_root, tmp_path):
+    import shutil
+
+    # Copy configuration into an isolated test directory.
+    shutil.copytree(project_root / "config", tmp_path / "config")
+
+    input_dir = tmp_path / "data" / "input"
+    output_dir = tmp_path / "data" / "output"
+    input_dir.mkdir(parents=True)
+    output_dir.mkdir(parents=True)
+    (tmp_path / "reports").mkdir()
+
+    source = input_dir / "customers.csv"
+
+    # First execution: deliberately invalid schema.
+    source.write_text(
+        "wrong_column\nvalue\n",
+        encoding="utf-8"
+    )
+
+    with pytest.raises(ValueError):
+        run_pipeline(
+            "config/customers.yaml",
+            "recovery-failed",
+            tmp_path
+        )
+
+    # Confirm that the failed run was recorded.
+    with sqlite3.connect(output_dir / "warehouse.db") as conn:
+        failed_status = conn.execute(
+            "SELECT status FROM pipeline_runs "
+            "WHERE run_id = 'recovery-failed'"
+        ).fetchone()[0]
+
+    assert failed_status == "failed"
+
+    # Correct the source using the expected customer schema.
+    source.write_text(
+        "customer_id,customer_name,email,signup_date,country_code,updated_at\n"
+        "C900,Recovery Test,recovery@example.com,2024-01-01,IN,"
+        "2026-01-01T10:00:00Z\n",
+        encoding="utf-8"
+    )
+
+    # Retry with a new run ID.
+    result = run_pipeline(
+        "config/customers.yaml",
+        "recovery-success",
+        tmp_path
+    )
+
+    assert result["status"] == "success"
+    assert result["published_rows"] == 1
+
+    with sqlite3.connect(output_dir / "warehouse.db") as conn:
+        customer_count = conn.execute(
+            "SELECT COUNT(*) FROM customers"
+        ).fetchone()[0]
+
+        statuses = conn.execute(
+            "SELECT status FROM pipeline_runs "
+            "WHERE run_id IN ('recovery-failed', 'recovery-success') "
+            "ORDER BY run_id"
+        ).fetchall()
+
+    assert customer_count == 1
+    assert sorted(status[0] for status in statuses) == [
+        "failed", "success"
+    ]
+
+
+def test_pipeline_ignores_late_arriving_older_order(project_root, tmp_path):
+    import shutil
+
+    shutil.copytree(project_root / "config", tmp_path / "config")
+
+    input_dir = tmp_path / "data" / "input"
+    output_dir = tmp_path / "data" / "output"
+    input_dir.mkdir(parents=True)
+    output_dir.mkdir(parents=True)
+    (tmp_path / "reports").mkdir()
+    (tmp_path / "data" / "quarantine").mkdir(parents=True)
+
+    # Create the customer required by the order foreign key.
+    customers_file = input_dir / "customers.csv"
+    customers_file.write_text(
+        "customer_id,customer_name,email,signup_date,country_code,updated_at\n"
+        "C900,Test Customer,test900@example.com,2024-01-01,IN,"
+        "2026-01-01T10:00:00Z\n",
+        encoding="utf-8",
+    )
+
+    run_pipeline(
+        "config/customers.yaml",
+        "late-customer-run",
+        tmp_path,
+    )
+
+    orders_file = input_dir / "orders.jsonl"
+
+    newer_order = {
+        "order_id": "O900",
+        "customer_id": "C900",
+        "order_date": "2026-01-01",
+        "amount": 500,
+        "currency": "INR",
+        "status": "PAID",
+        "updated_at": "2026-01-01T12:00:00Z",
+    }
+
+    orders_file.write_text(
+        json.dumps(newer_order) + "\n",
+        encoding="utf-8",
+    )
+
+    run_pipeline(
+        "config/orders.yaml",
+        "newer-order-run",
+        tmp_path,
+    )
+
+    # An older event arrives after the newer event.
+    older_order = {
+        **newer_order,
+        "amount": 300,
+        "updated_at": "2026-01-01T09:00:00Z",
+    }
+
+    orders_file.write_text(
+        json.dumps(older_order) + "\n",
+        encoding="utf-8",
+    )
+
+    run_pipeline(
+        "config/orders.yaml",
+        "late-order-run",
+        tmp_path,
+    )
+
+    with sqlite3.connect(output_dir / "warehouse.db") as conn:
+        result = conn.execute(
+            "SELECT amount, updated_at FROM orders "
+            "WHERE order_id = 'O900'"
+        ).fetchone()
+
+    assert result == (500, "2026-01-01T12:00:00+00:00")
