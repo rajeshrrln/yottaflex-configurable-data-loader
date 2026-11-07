@@ -1,17 +1,7 @@
-YottaFlex Configurable Data Loading Framework
-Automated Test Execution Evidence
+Clean clone verification:
+Python 3.14.2
+pytest: 22 passed
 
-Command: py -m pytest -v
-
-Test Results:
-Total tests: 11
-Passed: 11
-Failed: 0
-Execution time: 0.41 seconds
-
-Final Status: PASS
-Event-time protection regression tests: 15 passed in 2.51s
-
-Schema drift and recovery regression tests: 20 passed in 1.51s
-
-End-to-end late-arriving data integration tests: 22 passed in 2.60s
+Original project verification:
+Python 3.14.2
+pytest: 22 passed
