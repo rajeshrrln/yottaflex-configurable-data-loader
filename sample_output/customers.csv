@@ -1,0 +1,21 @@
+customer_id,customer_name,email,signup_date,country_code,updated_at,run_id,source_file
+C000001,Customer 1,customer1@example.com,2025-08-02,IN,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000002,Customer 2,customer2@example.com,2022-02-21,GB,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000003,Customer 3,customer3@example.com,2023-05-17,US,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000004,Customer 4,customer4@example.com,2022-10-13,IN,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000005,Customer 5,customer5@example.com,2025-10-17,AU,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000006,Customer 6,customer6@example.com,2022-06-28,AU,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000007,Customer 7,customer7@example.com,2024-05-14,IN,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000008,Customer 8,customer8@example.com,2022-03-03,IN,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000009,Customer 9,customer9@example.com,2023-03-24,US,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000010,Customer 10,customer10@example.com,2024-10-31,AU,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000011,Customer 11,customer11@example.com,2022-02-24,AU,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000012,Customer 12,customer12@example.com,2023-02-12,AU,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000013,Customer 13,customer13@example.com,2024-05-09,US,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000014,Customer 14,customer14@example.com,2024-07-08,AU,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000015,Customer 15,customer15@example.com,2023-07-24,IN,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000016,Customer 16,customer16@example.com,2022-11-23,DE,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000017,Customer 17,customer17@example.com,2023-11-28,GB,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000018,Customer 18,customer18@example.com,2022-11-15,US,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000019,Customer 19,customer19@example.com,2023-11-21,IN,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv
+C000020,Customer 20,customer20@example.com,2022-07-09,DE,2026-01-01T00:00:00+00:00,customers-demo,data/input/customers.csv

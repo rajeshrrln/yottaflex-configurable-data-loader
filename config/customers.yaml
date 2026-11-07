@@ -1,0 +1,24 @@
+dataset:
+  name: customers
+  description: Customer master data; one row per customer_id.
+source:
+  path: data/input/customers.csv
+  format: csv
+  options: { encoding: utf-8 }
+target:
+  table: customers
+  path: data/output/warehouse.db
+  format: sqlite
+  load_mode: upsert
+keys: [customer_id]
+schema:
+  customer_id: { type: string, nullable: false }
+  customer_name: { type: string, nullable: false }
+  email: { type: string, nullable: false }
+  signup_date: { type: date, nullable: false }
+  country_code: { type: string, nullable: false }
+  updated_at: { type: timestamp, nullable: false }
+business_rules:
+  - { name: valid_email, column: email, rule: email }
+  - { name: valid_country_code, column: country_code, rule: regex, pattern: "^[A-Z]{2}$" }
+  - { name: signup_not_future, column: signup_date, rule: not_future_date }

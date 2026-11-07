@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/
+*.py[cod]
+data/output/*
+data/quarantine/*
+logs/*
+reports/*
+!data/output/.gitkeep
+!data/quarantine/.gitkeep
+!logs/.gitkeep
+!reports/.gitkeep
+.env
+*.db
+*.egg-info/

@@ -1,0 +1,27 @@
+dataset:
+  name: orders
+  description: Order transactions; one row per order_id, referencing customers.
+source:
+  path: data/input/orders.jsonl
+  format: jsonl
+  options: { encoding: utf-8 }
+target:
+  table: orders
+  path: data/output/warehouse.db
+  format: sqlite
+  load_mode: upsert
+keys: [order_id]
+references:
+  - { column: customer_id, dataset: customers, target_table: customers, target_column: customer_id }
+schema:
+  order_id: { type: string, nullable: false }
+  customer_id: { type: string, nullable: false }
+  order_date: { type: date, nullable: false }
+  amount: { type: decimal, nullable: false }
+  currency: { type: string, nullable: false }
+  status: { type: string, nullable: false }
+  updated_at: { type: timestamp, nullable: false }
+business_rules:
+  - { name: positive_amount, column: amount, rule: greater_than, value: 0 }
+  - { name: supported_currency, column: currency, rule: in, values: [INR, USD, EUR] }
+  - { name: valid_status, column: status, rule: in, values: [PLACED, PAID, SHIPPED, CANCELLED, REFUNDED] }

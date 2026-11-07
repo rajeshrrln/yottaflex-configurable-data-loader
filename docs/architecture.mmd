@@ -1,0 +1,12 @@
+flowchart TD
+    A[CSV / JSONL / Parquet source] --> B[YAML metadata]
+    B --> C[Ingestion adapter]
+    C --> D[Schema and type validation]
+    D --> E[Business and reference checks]
+    E -->|valid| F[Transform and lineage columns]
+    E -->|invalid| G[Quarantine CSV with reasons]
+    F --> H[SQLite publisher: append / replace / upsert]
+    H --> I[Target tables]
+    H --> J[Run ledger]
+    G --> K[Run metrics JSON]
+    J --> K
